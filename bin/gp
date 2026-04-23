@@ -1,0 +1,43 @@
+#!/bin/bash
+
+# Global Config
+REPO_OWNER="hastagaming"
+REPO_NAME="GlobPack"
+REGISTRY_URL="https://raw.githubusercontent.com/$REPO_OWNER/$REPO_NAME/main/registry"
+
+# Colors
+CYAN='\033[0;36m'
+GREEN='\033[0;32m'
+RED='\033[0;31m'
+NC='\033[0m'
+
+show_usage() {
+    echo -e "${CYAN}GlobPack (gp) - Global Package Manager${NC}"
+    echo "Usage: gp install <package-name>"
+}
+
+install_package() {
+    PKG=$1
+    if [ -z "$PKG" ]; then
+        show_usage
+        exit 1
+    fi
+
+    echo -e "📡 Searching for ${GREEN}$PKG${NC} in GlobPack..."
+    
+    # Check if package exists via manifest.json
+    HTTP_CODE=$(curl -s -o /dev/null -w "%{http_code}" "$REGISTRY_URL/$PKG/manifest.json")
+
+    if [ "$HTTP_CODE" -eq 200 ]; then
+        echo -e "📦 Package found. Initializing installation..."
+        # Download and run the install script from the registry
+        curl -sL "$REGISTRY_URL/$PKG/install.sh" | bash
+    else
+        echo -e "${RED}❌ Error: Package '$PKG' not found in registry.${NC}"
+    fi
+}
+
+case "$1" in
+    install) install_package "$2" ;;
+    *) show_usage ;;
+esac
