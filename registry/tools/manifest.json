@@ -1,0 +1,7 @@
+{
+  "name": "tools",
+  "version": "1.0.0",
+  "description": "Essential system utilities for Termux users.",
+  "author": "hastagaming",
+  "category": "utility"
+}
