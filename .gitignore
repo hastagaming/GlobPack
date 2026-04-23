@@ -1,0 +1,8 @@
+# Temporary files
+*.log
+*.tmp
+.DS_Store
+
+# Development files
+test/
+tmp/
