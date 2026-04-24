@@ -1,0 +1,38 @@
+name: Notify Discussion
+on:
+  issues:
+    types: [opened]
+  pull_request:
+    types: [opened]
+
+jobs:
+  comment:
+    runs-on: ubuntu-latest
+    permissions:
+      issues: write
+      pull-requests: write
+    steps:
+      - name: Invite to Discussion
+        uses: actions/github-script@v6
+        with:
+          script: |
+            const message = "Thanks for the contribution! 👋\n\n" +
+                            "I've received your request. To keep things organized, " +
+                            "feel free to start a thread in our [Discussions tab](https://github.com/hastagaming/GlobPack/discussions) " +
+                            "if you want to chat more about this topic or need help!";
+            
+            if (context.payload.issue) {
+              github.rest.issues.createComment({
+                issue_number: context.issue.number,
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                body: message
+              });
+            } else if (context.payload.pull_request) {
+              github.rest.issues.createComment({
+                issue_number: context.payload.pull_request.number,
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                body: message
+              });
+            }
