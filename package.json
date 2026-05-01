@@ -1,6 +1,6 @@
 {
   "name": "globpack",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Decentralized Global Package Manager for Termux",
   "main": "bin/gp",
   "bin": {
