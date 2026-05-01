@@ -1,19 +1,64 @@
-#!/bin/bash
+#!/usr/bin/env bash
 
 # Global Config
 REPO_OWNER="hastagaming"
 REPO_NAME="GlobPack"
 REGISTRY_URL="https://raw.githubusercontent.com/$REPO_OWNER/$REPO_NAME/main/registry"
+VERSION="1.0.0"
 
 # Colors
 CYAN='\033[0;36m'
 GREEN='\033[0;32m'
 RED='\033[0;31m'
+YELLOW='\033[1;33m'
 NC='\033[0m'
 
+# Icons (Android/Technical Style)
+# Gunakan '•' atau '›' jika font tidak mendukung Nerd Fonts
+# Jika Komandan pakai Nerd Font, ganti '›' dengan ''
+ICON_ANDROID="${GREEN}›${NC}"
+ICON_SEARCH="${CYAN}🔍${NC}" 
+ICON_SUCCESS="${GREEN}✔${NC}"
+ICON_ERROR="${RED}✘${NC}"
+ICON_INFO="${CYAN}ℹ${NC}"
+
 show_usage() {
-    echo -e "${CYAN}GlobPack (gp) - Global Package Manager${NC}"
-    echo "Usage: gp install <package-name>"
+    echo -e "${CYAN}GlobPack (gp) - Global Package Manager (v$VERSION)${NC}"
+    echo "Usage: gp <command> [arguments]"
+    echo ""
+    echo "Commands:"
+    echo "  install <package-name>  Install a package from registry"
+    echo "  self-update             Update GlobPack to the latest version"
+    echo "  version                 Show current version"
+}
+
+self_update() {
+    echo -e "${ICON_INFO} ${CYAN}Memeriksa pembaruan untuk GlobPack...${NC}"
+    
+    LATEST_TAG=$(curl -s "https://api.github.com/repos/$REPO_OWNER/$REPO_NAME/releases/latest" | grep '"tag_name":' | sed -E 's/.*"([^"]+)".*/\1/')
+    LATEST_VERSION=$(echo "$LATEST_TAG" | sed 's/v//')
+
+    if [ -z "$LATEST_VERSION" ]; then
+        echo -e "${ICON_ERROR} ${RED}Gagal memeriksa versi terbaru.${NC}"
+        return 1
+    fi
+
+    if [ "$VERSION" == "$LATEST_VERSION" ]; then
+        echo -e "${ICON_SUCCESS} ${GREEN}GlobPack sudah versi terbaru (v$VERSION).${NC}"
+    else
+        echo -e "${ICON_INFO} ${YELLOW}Versi baru tersedia: v$LATEST_VERSION${NC}"
+        echo -e "${ICON_INFO} ${CYAN}Sedang mengunduh pembaruan...${NC}"
+        
+        curl -sL "https://raw.githubusercontent.com/$REPO_OWNER/$REPO_NAME/main/bin/gp" -o "$PREFIX/bin/gp"
+        
+        if [ $? -eq 0 ]; then
+            chmod +x "$PREFIX/bin/gp"
+            echo -e "${ICON_SUCCESS} ${GREEN}Berhasil diperbarui ke v$LATEST_VERSION.${NC}"
+            exit 0
+        else
+            echo -e "${ICON_ERROR} ${RED}Pembaruan gagal.${NC}"
+        fi
+    fi
 }
 
 install_package() {
@@ -23,21 +68,21 @@ install_package() {
         exit 1
     fi
 
-    echo -e "📡 Searching for ${GREEN}$PKG${NC} in GlobPack..."
-    
-    # Check if package exists via manifest.json
+    echo -e "${ICON_ANDROID} Searching for ${GREEN}$PKG${NC} in GlobPack..."
+
     HTTP_CODE=$(curl -s -o /dev/null -w "%{http_code}" "$REGISTRY_URL/$PKG/manifest.json")
 
     if [ "$HTTP_CODE" -eq 200 ]; then
-        echo -e "📦 Package found. Initializing installation..."
-        # Download and run the install script from the registry
+        echo -e "${ICON_SUCCESS} Package found. Initializing installation..."
         curl -sL "$REGISTRY_URL/$PKG/install.sh" | bash
     else
-        echo -e "${RED}❌ Error: Package '$PKG' not found in registry.${NC}"
+        echo -e "${ICON_ERROR} ${RED}Error: Package '$PKG' not found.${NC}"
     fi
 }
 
 case "$1" in
     install) install_package "$2" ;;
+    self-update) self_update ;;
+    version) echo -e "${ICON_ANDROID} ${CYAN}GlobPack v$VERSION${NC}" ;;
     *) show_usage ;;
 esac

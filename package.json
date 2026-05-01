@@ -1,0 +1,28 @@
+{
+  "name": "globpack",
+  "version": "1.0.0",
+  "description": "Decentralized Global Package Manager for Termux",
+  "main": "bin/gp",
+  "bin": {
+    "gp": "bin/gp"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/hastagaming/GlobPack.git"
+  },
+  "keywords": [
+    "termux",
+    "package-manager",
+    "android",
+    "gp"
+  ],
+  "author": "Nasa (hastagaming)",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/hastagaming/GlobPack/issues"
+  },
+  "homepage": "https://github.com/hastagaming/GlobPack#readme"
+}
