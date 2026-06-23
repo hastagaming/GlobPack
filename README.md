@@ -25,6 +25,7 @@ Note: If you encounter permission issues, you might need to use npm install -g g
 ---
 
 ##​ 📖 Usage
+
 ​1. Search and Install
 ​To install a package from the GlobPack registry:
 ```bash
@@ -47,12 +48,14 @@ gp version
 ---
 
 # 🏗 Developing for GlobPack
+
 ​Interested in adding your own tools to the GlobPack registry?
 ​Fork this repository.
 ​Add your package manifest in the registry/ folder.
 ​Submit a Pull Request!
 
 ​# 👤 Author
+
 ​Nasa (hastagaming) - Lead Developer
 ​GitHub: @hastagaming
 ​# 📄 License
